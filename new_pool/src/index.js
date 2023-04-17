@@ -1,9 +1,11 @@
 const axios = require('axios');
 const { WebhookClient, MessageEmbed } = require('discord.js');
 const schedule = require('node-schedule');
+require('dotenv').config();
 
-const webhookURL = 'https://discord.com/api/webhooks/1097082594413260840/LRQFIJQbmKvdD3DLnHlMO75Qf_-fGzqu4nUxF5U9fXee0p7kk-gLWnLJfLknLYBnFbxO';
-const roleId = '923738274458116096';
+
+const webhookURL = process.env.WEBHOOK_URL
+const roleId = process.env.roleID;
 const webhookClient = new WebhookClient({ url: webhookURL });
 
 async function checkPoolNumber() {
@@ -52,10 +54,10 @@ async function sendDiscordMessage(poolInfo) {
     }
 }
 (async () => {
-    let lastPoolNumber = 0;
+    let lastPoolNumber = await checkPoolNumber();;
     console.log('Démarrage du programme, dernier numéro de pool:', lastPoolNumber);
 
-      schedule.scheduleJob('*/1 * * * *', async () => {
+    schedule.scheduleJob('*/1 * * * *', async () => {
     const currentPoolNumber = await checkPoolNumber();
 
     if (currentPoolNumber !== lastPoolNumber) {
